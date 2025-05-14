@@ -1,104 +1,142 @@
-# 📦 Uitleen-API – Equipment Lending System for Firda
+Certainly! Here's your **updated and final `README.md`** file for your Laravel Uitleen-API project, including the correct GitHub URL and clean formatting:
 
-The **Uitleen-API** is a Laravel-based RESTful API designed for managing the lending and tracking of school equipment at Firda. Students can browse available items, while authenticated teachers (admins) can manage lending, returns, damage reports, and categories. The system also includes automated email reminders for due and overdue returns.
+````markdown
+# 📦 Uitleen-API – Firda
 
----
+A Laravel-based lending system that allows students to view equipment and teachers (admins) to manage loans, returns, damage reports, and reminders. Built with role-based access, email notifications, and RESTful endpoints.
 
-## 🚀 Features
+## 🔗 Project Repository
 
-- 🔍 View categories and items without logging in
-- 🔐 Teacher registration and login (Firda email required)
-- 📚 Manage lending and returns of items
-- 🛠 Damage inspection and registration
-- 📬 Automated email reminders
-- 🗃 Admin-level category and user management
-- 📊 Overviews for due and late items
+```bash
+git clone https://github.com/12lolo/uitlenen.git
+````
 
 ---
 
-## 📁 Project Structure
+## 📚 Documentation
 
-- `app/Models` – Eloquent models
-- `app/Http/Controllers` – REST API controllers
-- `routes/api.php` – API routes
-- `database/migrations` – Database structure
-- `tests/Feature` – Automated feature tests
-- `docs/` – Markdown documentation (functional, technical, testing)
+All documentation is available in the `/docs` folder and includes:
+
+* `projectplan.md` – Project summary, planning and objectives
+* `functioneel-ontwerp.md` – Functional design including user roles and modules
+* `technisch-ontwerp.md` – Technical system design, database, and architecture
+* `testplan.md` – Test plan and test cases
+* `testrapport.md` – Will be created after testing phase
 
 ---
 
-## 🧑‍💻 Installation
+## 👥 Roles
 
-1. Clone the repository:
+* **Student** (not logged in): Can view available equipment by category
+* **Docent** (logged in): Can manage categories, items, loans, damage reports, and view other users
+
+> Only email addresses ending in `@firda.nl` or `@student.firda.nl` can register
+> Only a logged-in docent (admin) can add other docents
+
+---
+
+## 🛠 Features
+
+* JWT-based registration & login system
+* Role-based access (student vs docent)
+* Equipment categories & item listings
+* Loan registration and return with optional damage logging
+* Email reminders before and after loan return dates
+* RESTful API structure with token auth
+* Modular and maintainable codebase
+
+---
+
+## 🧱 Tech Stack
+
+* Laravel 11 (PHP 8.3)
+* Sanctum (for authentication)
+* MySQL or SQLite (local)
+* Laravel Scheduler (for emails)
+* Mail (configured in `.env`)
+
+---
+
+## 🚀 Installation
+
+1. Clone the repository
+
    ```bash
-   git clone https://github.com/yourname/uitleen-api.git
-   cd uitleen-api
-Install dependencies:
+   git clone https://github.com/12lolo/uitlenen.git
+   cd uitlenen
+   ```
 
-bash
-Copy
-Edit
-composer install
-npm install && npm run build
-Create .env and configure:
+2. Install dependencies
 
-bash
-Copy
-Edit
-cp .env.example .env
-php artisan key:generate
-Set database credentials in .env and run migrations:
+   ```bash
+   composer install
+   npm install && npm run build
+   ```
 
-bash
-Copy
-Edit
-php artisan migrate
-(Optional) Run test suite:
+3. Set up your environment
 
-bash
-Copy
-Edit
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+4. Configure your `.env` (database, mail, etc.)
+
+5. Run migrations
+
+   ```bash
+   php artisan migrate
+   ```
+
+6. Run the local server
+
+   ```bash
+   php artisan serve
+   ```
+
+---
+
+## 🧪 Running Tests
+
+```bash
 php artisan test
-🔒 Authentication
-Teachers register with a valid Firda email (@firda.nl or @student.firda.nl)
+```
 
-JSON Web Tokens (JWT) are used for login and protected routes
+---
 
-📬 Scheduled Tasks
-Daily cron job (schedule:run) triggers automatic email reminders:
+## 📬 Mail Setup (Development)
 
-24 hours before return deadline
+For testing email reminders, use a service like [Mailtrap](https://mailtrap.io) and update your `.env`:
 
-24 hours after overdue
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=your_mailtrap_username
+MAIL_PASSWORD=your_mailtrap_password
+MAIL_FROM_ADDRESS="noreply@firda.nl"
+MAIL_FROM_NAME="Uitleen API"
+```
 
-🧪 Tests
-Feature tests are located in tests/Feature/. Run with:
+---
 
-bash
-Copy
-Edit
-php artisan test
-📄 Documentation
-All project documentation is included in /docs/:
+## 📅 Task Scheduler
 
-functioneel-ontwerp.md
+Add this cron to your server to send daily email reminders:
 
-technisch-ontwerp.md
+```bash
+* * * * * php /path/to/artisan schedule:run >> /dev/null 2>&1
+```
 
-testplan.md
+---
 
-testrapport.md (after testing phase)
+## 📄 License
 
-📌 Requirements
-PHP 8.1+
+This project is for educational use by students at Firda.
 
-Laravel 10+
+---
 
-MySQL / MariaDB
+## ✍️ Author
 
-Node.js + npm (for frontend build)
-
-Mail server for email functionality
-
-📖 License
-This project is for educational purposes under Firda and is not licensed for production use.
+**Senne Visser**
+[GitHub: 12lolo](https://github.com/12lolo)
