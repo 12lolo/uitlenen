@@ -1,61 +1,104 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 📦 Uitleen-API – Equipment Lending System for Firda
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+The **Uitleen-API** is a Laravel-based RESTful API designed for managing the lending and tracking of school equipment at Firda. Students can browse available items, while authenticated teachers (admins) can manage lending, returns, damage reports, and categories. The system also includes automated email reminders for due and overdue returns.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- 🔍 View categories and items without logging in
+- 🔐 Teacher registration and login (Firda email required)
+- 📚 Manage lending and returns of items
+- 🛠 Damage inspection and registration
+- 📬 Automated email reminders
+- 🗃 Admin-level category and user management
+- 📊 Overviews for due and late items
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 📁 Project Structure
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- `app/Models` – Eloquent models
+- `app/Http/Controllers` – REST API controllers
+- `routes/api.php` – API routes
+- `database/migrations` – Database structure
+- `tests/Feature` – Automated feature tests
+- `docs/` – Markdown documentation (functional, technical, testing)
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🧑‍💻 Installation
 
-## Laravel Sponsors
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourname/uitleen-api.git
+   cd uitleen-api
+Install dependencies:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+bash
+Copy
+Edit
+composer install
+npm install && npm run build
+Create .env and configure:
 
-### Premium Partners
+bash
+Copy
+Edit
+cp .env.example .env
+php artisan key:generate
+Set database credentials in .env and run migrations:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+bash
+Copy
+Edit
+php artisan migrate
+(Optional) Run test suite:
 
-## Contributing
+bash
+Copy
+Edit
+php artisan test
+🔒 Authentication
+Teachers register with a valid Firda email (@firda.nl or @student.firda.nl)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+JSON Web Tokens (JWT) are used for login and protected routes
 
-## Code of Conduct
+📬 Scheduled Tasks
+Daily cron job (schedule:run) triggers automatic email reminders:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+24 hours before return deadline
 
-## Security Vulnerabilities
+24 hours after overdue
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+🧪 Tests
+Feature tests are located in tests/Feature/. Run with:
 
-## License
+bash
+Copy
+Edit
+php artisan test
+📄 Documentation
+All project documentation is included in /docs/:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+functioneel-ontwerp.md
+
+technisch-ontwerp.md
+
+testplan.md
+
+testrapport.md (after testing phase)
+
+📌 Requirements
+PHP 8.1+
+
+Laravel 10+
+
+MySQL / MariaDB
+
+Node.js + npm (for frontend build)
+
+Mail server for email functionality
+
+📖 License
+This project is for educational purposes under Firda and is not licensed for production use.
