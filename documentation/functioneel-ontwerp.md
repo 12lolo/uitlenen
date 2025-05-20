@@ -231,7 +231,6 @@ Het systeem is gebouwd als RESTful API met de volgende stack:
 
 - Laravel 11 (PHP 8
 - MySQL voor opslag van uitleen-, schade- en gebruikersdata
-- Microsoft OAuth (Azure AD) voor authenticatie van Firda-docenten
 - Laravel Mail voor het automatisch verzenden van herinneringen
 - JSON als standaarduitwisselingsformaat
 ---
