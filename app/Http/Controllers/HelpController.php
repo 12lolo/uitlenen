@@ -58,6 +58,22 @@ class HelpController extends Controller
                 ]
             ],
             [
+                'module' => '🧪 Testing',
+                'endpoints' => [
+                    [
+                        'method' => 'POST',
+                        'endpoint' => '/api/test/email',
+                        'description' => 'Send a test email to verify mail configuration',
+                        'auth_required' => false,
+                        'parameters' => [
+                            'recipient' => 'Email address to send the test to (required)',
+                            'subject' => 'Email subject (optional)',
+                            'message' => 'Email message (optional)'
+                        ]
+                    ]
+                ]
+            ],
+            [
                 'module' => '❓ Help',
                 'endpoints' => [
                     [

@@ -10,12 +10,18 @@ use App\Http\Controllers\LoanController;
 use App\Http\Controllers\DamageController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\HelpController;
+use App\Http\Controllers\TestController;
 
 /*
 |--------------------------------------------------------------------------
 | API Routes
 |--------------------------------------------------------------------------
 */
+
+// Help routes
+Route::get('/help', [HelpController::class, 'publicHelp']);
+Route::get('/help/authenticated', [HelpController::class, 'authenticatedHelp'])->middleware('auth:sanctum');
 
 // Authentication routes
 Route::post('/login', [AuthController::class, 'login']);
@@ -31,6 +37,9 @@ Route::get('/user', function (Request $request) {
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/categories/{id}/items', [CategoryController::class, 'items']);
 Route::get('/items/{id}', [ItemController::class, 'show']);
+
+// Test routes
+Route::post('/test/email', [TestController::class, 'testEmail']);
 
 // Protected routes - authentication required
 Route::middleware('auth:sanctum')->group(function () {
