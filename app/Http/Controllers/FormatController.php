@@ -6,6 +6,23 @@ use Illuminate\Http\Request;
 
 class FormatController extends Controller
 {
+    public function accountSetupFormat()
+    {
+        return response()->json([
+            'user_id' => '(user id from verification link)',
+            'name' => '(your full name)',
+            'password' => '(your password)',
+            'password_confirmation' => '(repeat password)'
+        ]);
+    }
+
+    public function invitationResendFormat()
+    {
+        return response()->json([
+            'email' => '(email address of the user to resend invitation)'
+        ]);
+    }
+
     public function loginFormat()
     {
         return response()->json([

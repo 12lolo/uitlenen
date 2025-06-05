@@ -22,11 +22,63 @@ class HelpController extends Controller
                         'auth_required' => false
                     ],
                     [
+                        'method' => 'GET',
+                        'endpoint' => '/api/login/format',
+                        'description' => 'Get format for login request',
+                        'auth_required' => false
+                    ],
+                    [
                         'method' => 'POST',
                         'endpoint' => '/api/register',
                         'description' => 'Register new account (only @firda.nl or @student.firda.nl)',
                         'auth_required' => false
                     ],
+                    [
+                        'method' => 'GET',
+                        'endpoint' => '/api/register/format',
+                        'description' => 'Get format for register request',
+                        'auth_required' => false
+                    ],
+                ]
+            ],
+            [
+                'module' => '🔑 Account Setup',
+                'endpoints' => [
+                    [
+                        'method' => 'POST',
+                        'endpoint' => '/api/account-setup/complete',
+                        'description' => 'Complete account setup after email verification',
+                        'auth_required' => false
+                    ],
+                    [
+                        'method' => 'GET',
+                        'endpoint' => '/api/account-setup/format',
+                        'description' => 'Get format for account setup completion',
+                        'auth_required' => false
+                    ],
+                    [
+                        'method' => 'GET',
+                        'endpoint' => '/api/account-setup/status',
+                        'description' => 'Check account setup status',
+                        'auth_required' => false
+                    ]
+                ]
+            ],
+            [
+                'module' => '👥 Invitations',
+                'endpoints' => [
+                    [
+                        'method' => 'POST',
+                        'endpoint' => '/api/invitations/resend',
+                        'description' => 'Resend invitation to unverified user',
+                        'auth_required' => true
+                    ],
+                    [
+                        'method' => 'GET',
+                        'endpoint' => '/api/invitations/resend/format',
+                        'description' => 'Get format for resending invitation',
+                        'auth_required' => true
+                    ]
                 ]
             ],
             [
@@ -70,6 +122,12 @@ class HelpController extends Controller
                             'subject' => 'Email subject (optional)',
                             'message' => 'Email message (optional)'
                         ]
+                    ],
+                    [
+                        'method' => 'GET',
+                        'endpoint' => '/api/test/email/format',
+                        'description' => 'Get format for test email request',
+                        'auth_required' => false
                     ]
                 ]
             ],
@@ -133,9 +191,21 @@ class HelpController extends Controller
                         'auth_required' => true
                     ],
                     [
+                        'method' => 'GET',
+                        'endpoint' => '/api/categories/format',
+                        'description' => 'Get format for creating category',
+                        'auth_required' => true
+                    ],
+                    [
                         'method' => 'PUT',
                         'endpoint' => '/api/categories/{id}',
                         'description' => 'Update existing category',
+                        'auth_required' => true
+                    ],
+                    [
+                        'method' => 'GET',
+                        'endpoint' => '/api/categories/update/format',
+                        'description' => 'Get format for updating category',
                         'auth_required' => true
                     ],
                     [
@@ -162,9 +232,21 @@ class HelpController extends Controller
                         'auth_required' => true
                     ],
                     [
+                        'method' => 'GET',
+                        'endpoint' => '/api/items/format',
+                        'description' => 'Get format for creating item',
+                        'auth_required' => true
+                    ],
+                    [
                         'method' => 'PUT',
                         'endpoint' => '/api/items/{id}',
                         'description' => 'Update existing item',
+                        'auth_required' => true
+                    ],
+                    [
+                        'method' => 'GET',
+                        'endpoint' => '/api/items/update/format',
+                        'description' => 'Get format for updating item',
                         'auth_required' => true
                     ],
                     [
@@ -191,9 +273,21 @@ class HelpController extends Controller
                         'auth_required' => true
                     ],
                     [
+                        'method' => 'GET',
+                        'endpoint' => '/api/lendings/format',
+                        'description' => 'Get format for creating loan',
+                        'auth_required' => true
+                    ],
+                    [
                         'method' => 'POST',
                         'endpoint' => '/api/lendings/{id}/return',
                         'description' => 'Return an item',
+                        'auth_required' => true
+                    ],
+                    [
+                        'method' => 'GET',
+                        'endpoint' => '/api/lendings/return/format',
+                        'description' => 'Get format for returning item',
                         'auth_required' => true
                     ],
                     [
@@ -218,6 +312,12 @@ class HelpController extends Controller
                         'endpoint' => '/api/items/{id}/damage',
                         'description' => 'Report damage for an item',
                         'auth_required' => true
+                    ],
+                    [
+                        'method' => 'GET',
+                        'endpoint' => '/api/items/damage/format',
+                        'description' => 'Get format for reporting damage',
+                        'auth_required' => true
                     ]
                 ]
             ],
@@ -237,6 +337,13 @@ class HelpController extends Controller
                         'description' => 'Create new user (teacher)',
                         'auth_required' => true,
                         'admin_required' => true
+                    ],
+                    [
+                        'method' => 'GET',
+                        'endpoint' => '/api/users/format',
+                        'description' => 'Get format for creating user',
+                        'auth_required' => true,
+                        'admin_required' => true
                     ]
                 ]
             ],
@@ -249,6 +356,53 @@ class HelpController extends Controller
                         'description' => 'Send reminders for upcoming returns and overdue items',
                         'auth_required' => true,
                         'cron_token_required' => true
+                    ],
+                    [
+                        'method' => 'GET',
+                        'endpoint' => '/api/notifications/send-reminders/format',
+                        'description' => 'Get format for sending reminders',
+                        'auth_required' => true
+                    ]
+                ]
+            ],
+            [
+                'module' => '📊 Projects',
+                'endpoints' => [
+                    [
+                        'method' => 'GET',
+                        'endpoint' => '/api/projects',
+                        'description' => 'Get all projects',
+                        'auth_required' => true
+                    ],
+                    [
+                        'method' => 'POST',
+                        'endpoint' => '/api/projects',
+                        'description' => 'Create new project',
+                        'auth_required' => true
+                    ],
+                    [
+                        'method' => 'GET',
+                        'endpoint' => '/api/projects/format',
+                        'description' => 'Get format for creating project',
+                        'auth_required' => true
+                    ],
+                    [
+                        'method' => 'GET',
+                        'endpoint' => '/api/projects/{id}',
+                        'description' => 'Get project details',
+                        'auth_required' => true
+                    ],
+                    [
+                        'method' => 'PUT',
+                        'endpoint' => '/api/projects/{id}',
+                        'description' => 'Update project',
+                        'auth_required' => true
+                    ],
+                    [
+                        'method' => 'DELETE',
+                        'endpoint' => '/api/projects/{id}',
+                        'description' => 'Delete project',
+                        'auth_required' => true
                     ]
                 ]
             ]

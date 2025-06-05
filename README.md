@@ -1,4 +1,5 @@
-Certainly! Here's your **updated and final `README.md`** file for your Laravel Uitleen-API project, including the correct GitHub URL and clean formatting:
+Certainly! Here's your **updated and final `README.md`** file for your Laravel Uitleen-API project, including the correct GitHub URL, clean formatting, and deployment information:
+
 # Firda Uitleensysteem API
 
 ## Beschrijving
@@ -19,17 +20,32 @@ composer install
 # Kopieer het .env bestand
 cp .env.example .env
 
-# Genereer een app key
+# Genereer een applicatiesleutel
 php artisan key:generate
-
-# Configureer de database in .env
 
 # Voer de migraties uit
 php artisan migrate
 
-# Start de server
-php artisan serve
+# Seed de database
+php artisan db:seed
 ```
+
+## Deployment
+
+Voor het deployen van de applicatie naar de productieserver zijn de volgende scripts beschikbaar:
+
+```bash
+# Deploy naar productie
+./deploy_production.sh
+
+# Opschonen van de productieserver
+./cleanup_production.sh
+
+# Onderhoudstool voor verschillende taken
+./maintenance.sh
+```
+
+Zie `DEPLOYMENT.md` voor gedetailleerde instructies over het deployment proces.
 
 ## Foutoplossing
 
@@ -75,7 +91,7 @@ php artisan migrate:fresh
 - Gebruikersbeheer met rollen
 
 Raadpleeg de documentatie in `/documentation/functioneel-ontwerp.md` voor meer details.
-````markdown
+`````markdown
 # 📦 Uitleen-API – Firda
 
 A Laravel-based lending system that allows students to view equipment and teachers (admins) to manage loans, returns, damage reports, and reminders. Built with role-based access, email notifications, and RESTful endpoints.

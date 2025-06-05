@@ -42,12 +42,14 @@ Route::post('/email/verification-notification', [App\Http\Controllers\Verificati
 // Invitation Routes
 Route::post('/invitations/resend', [App\Http\Controllers\InvitationController::class, 'resend'])
     ->middleware(['auth:sanctum', 'verified']);
+Route::get('/invitations/resend/format', [FormatController::class, 'invitationResendFormat']);
 
 // Account Setup Routes
 Route::post('/account-setup/complete', [App\Http\Controllers\AccountSetupController::class, 'completeSetup'])
     ->middleware(['check.invitation']);
 Route::get('/account-setup/status', [App\Http\Controllers\AccountSetupController::class, 'checkSetupStatus'])
     ->middleware(['check.invitation']);
+Route::get('/account-setup/format', [FormatController::class, 'accountSetupFormat']);
 
 // User profile route
 Route::get('/user', function (Request $request) {
@@ -58,10 +60,6 @@ Route::get('/user', function (Request $request) {
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/categories/{id}/items', [CategoryController::class, 'items']);
 Route::get('/items/{id}', [ItemController::class, 'show']);
-
-// Authentication routes
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/register', [AuthController::class, 'register']);
 
 // Test routes
 Route::post('/test/email', [TestController::class, 'testEmail']);

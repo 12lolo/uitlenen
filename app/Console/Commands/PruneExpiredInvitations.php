@@ -13,9 +13,7 @@ class PruneExpiredInvitations extends Command
      *
      * @var string
      */
-    protected $signature = 'app:prune-expired-invitations';
-
-    /**
+    protected $signature = 'app:prune-expired-invitations';    /**
      * The console command description.
      *
      * @var string
