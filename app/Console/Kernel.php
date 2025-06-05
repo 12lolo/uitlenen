@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
     {
         // Run email reminders every day at 8:00 AM
         $schedule->command('email:reminders')->dailyAt('08:00');
+        $schedule->command('app:prune-expired-invitations')->daily();
     }
 
     /**

@@ -33,13 +33,13 @@ De API maakt het mogelijk om uitleenmateriaal bij Firda digitaal te beheren. Stu
 | Eigenschap                 | Omschrijving                                                                                                                                                                                                               |
 | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Naam**                   | Registreren                                                                                                                                                                                                                |
-| **Versie**                 | 1.0                                                                                                                                                                                                                        |
+| **Versie**                 | 1.1                                                                                                                                                                                                                        |
 | **Actor**                  | Docent                                                                                                                                                                                                                     |
 | **Preconditie**            | Gebruiker is niet ingelogd                                                                                                                                                                                                 |
-| **Scenario**               | 1. Gebruiker opent registratiepagina<br>2. Voert naam, e-mailadres en wachtwoord in<br>3. API controleert of e-mailadres eindigt op `@firda.nl` of `@student.firda.nl`<br>4. Bij geldige gegevens wordt account aangemaakt |
-| **Uitzonderingen**         | - Ongeldig e-mailadres (geen Firda-domein)<br>- E-mailadres bestaat al<br>- Wachtwoord te zwak                                                                                                                             |
-| **Niet-functionele eisen** | - E-mailvalidatie vereist<br>- Registratie binnen 5 sec afgerond                                                                                                                                                           |
-| **Postconditie**           | Gebruiker heeft een account en kan inloggen                                                                                                                                                                                |
+| **Scenario**               | 1. Gebruiker opent registratiepagina<br>2. Voert naam, e-mailadres en wachtwoord in<br>3. API controleert of e-mailadres eindigt op `@firda.nl` of `@student.firda.nl`<br>4. Bij geldige gegevens wordt account aangemaakt<br>5. Verificatie-e-mail wordt verzonden<br>6. Gebruiker klikt op verificatielink in e-mail<br>7. Gebruiker voltooit account setup |
+| **Uitzonderingen**         | - Ongeldig e-mailadres (geen Firda-domein)<br>- E-mailadres bestaat al<br>- Wachtwoord te zwak<br>- Verificatielink verloopt na 6 uur                                                                                                                             |
+| **Niet-functionele eisen** | - E-mailvalidatie vereist<br>- Registratie binnen 5 sec afgerond<br>- Verificatielinks zijn 6 uur geldig                                                                                                                                                           |
+| **Postconditie**           | Gebruiker heeft een geverifieerd account en kan inloggen                                                                                                                                                                                |
 
 
 ## 🔐 Module: Inloggen
@@ -47,11 +47,11 @@ De API maakt het mogelijk om uitleenmateriaal bij Firda digitaal te beheren. Stu
 | Eigenschap                 | Omschrijving                                                                                                |
 | -------------------------- | ----------------------------------------------------------------------------------------------------------- |
 | **Naam**                   | Inloggen met geregistreerd account                                                                          |
-| **Versie**                 | 1.1 (aangepast)                                                                                             |
+| **Versie**                 | 1.2                                                                                                          |
 | **Actor**                  | Docent                                                                                                      |
-| **Preconditie**            | Account bestaat en gebruiker is niet ingelogd                                                               |
+| **Preconditie**            | Account bestaat, is geverifieerd, setup is voltooid, en gebruiker is niet ingelogd                          |
 | **Scenario**               | 1. Gebruiker voert e-mailadres en wachtwoord in<br>2. API valideert gegevens<br>3. Token wordt teruggegeven |
-| **Uitzonderingen**         | - Ongeldige login<br>- Geen netwerk<br>- E-mail bestaat niet                                                |
+| **Uitzonderingen**         | - Ongeldige login<br>- Geen netwerk<br>- E-mail bestaat niet<br>- E-mail is niet geverifieerd<br>- Account setup is niet voltooid |
 | **Niet-functionele eisen** | - Token is JWT of sanctum gebaseerd<br>- Reactietijd ≤ 2 sec                                                |
 | **Postconditie**           | Gebruiker is ingelogd en kan API gebruiken                                                                  |
 
@@ -177,18 +177,31 @@ De API maakt het mogelijk om uitleenmateriaal bij Firda digitaal te beheren. Stu
 
 ---
 
+## 🔑 Module: Account Verificatie en Setup
+
+| Eigenschap             | Omschrijving                                                                 |
+|------------------------|------------------------------------------------------------------------------|      
+| **Naam**               | E-mailverificatie en account setup                                             |
+| **Versie**             | 1.0                                                                          |
+| **Actor**              | Docent                                                                       |
+| **Preconditie**        | Gebruiker heeft een uitnodiging ontvangen of is geregistreerd maar nog niet geverifieerd |
+| **Scenario**           | 1. Gebruiker ontvangt verificatie-e-mail<br>2. Klikt op verificatielink binnen 6 uur<br>3. E-mailadres wordt geverifieerd<br>4. Gebruiker vult naam en wachtwoord in om account setup te voltooien |
+| **Uitzonderingen**     | - Verificatielink is verlopen (>6 uur)<br>- Setup niet voltooid<br>- Ongeldige gegevens |
+| **Niet-functionele eisen** | - Verificatielink bevat beveiligde token<br>- Duidelijke foutmeldingen<br>- Setup formulier moet mobiel werken |
+| **Postconditie**       | Gebruiker heeft een volledig ingesteld en geverifieerd account                |
+
 ## 👥 Module: Docenten beheren
 
 | Eigenschap             | Omschrijving                                                                 |
 |------------------------|------------------------------------------------------------------------------|
-| **Naam**               | Docentenoverzicht en toevoegen                                               |
-| **Versie**             | 1.1                                                                          |
+| **Naam**               | Docentenoverzicht en uitnodigen                                              |
+| **Versie**             | 1.2                                                                          |
 | **Actor**              | Docent (alleen admin)                                                        |
 | **Preconditie**        | Docent is ingelogd en heeft adminrechten                                     |
-| **Scenario**           | 1. Admin-docent opent `/api/users`<br>2. Ziet alle geregistreerde docenten<br>3. Kan een nieuwe docent toevoegen met naam en e-mailadres |
-| **Uitzonderingen**     | - Geen adminrechten → toegang geweigerd<br>- Ongeldige gegevens              |
-| **Niet-functionele eisen** | - Alleen accounts met @firda.nl of @student.firda.nl toegestaan<br>- Validatie vereist |
-| **Postconditie**       | Nieuwe docent is geregistreerd                                               |
+| **Scenario**           | 1. Admin-docent opent `/api/users`<br>2. Ziet alle geregistreerde docenten<br>3. Kan een nieuwe docent uitnodigen met e-mailadres<br>4. Uitgenodigde docent ontvangt verificatie-e-mail<br>5. Docent kan uitnodiging opnieuw versturen indien nodig |
+| **Uitzonderingen**     | - Geen adminrechten → toegang geweigerd<br>- Ongeldige gegevens<br>- Uitnodiging verloopt na 6 uur zonder actie              |
+| **Niet-functionele eisen** | - Alleen e-mailadressen met @firda.nl domein toegestaan<br>- Validatie vereist<br>- Vervallen uitnodigingen worden automatisch verwijderd |
+| **Postconditie**       | Nieuwe docent is uitgenodigd en kan account setup voltooien                  |
 
 ---
 
@@ -207,6 +220,11 @@ De API stuurt automatisch een e-mail naar de lener:
 |--------------------------------| ----------------------------------- | ------- | -------------- | ------------------------------------------------------- |
 | 🔐 Inloggen                    | `/api/login`                        | POST    | ❌              | Inloggen met geregistreerd account                      |
 | 🧾 Registreren                 | `/api/register`                     | POST    | ❌              | Account aanmaken (alleen @firda.nl / @student.firda.nl) |
+| 🔑 E-mail verificatie          | `/api/email/verify/{id}/{hash}`     | GET     | ❌              | Verificatielink uit e-mail (geldig voor 6 uur)          |
+| 🔑 Verificatie opnieuw versturen | `/api/email/verification-notification` | POST    | ✅              | Verificatie-e-mail opnieuw versturen                    |
+| 🔑 Account setup voltooien    | `/api/account-setup/complete`       | POST    | ❌              | Accountgegevens instellen na e-mailverificatie          |
+| 🔑 Setup status controleren    | `/api/account-setup/status`         | GET     | ❌              | Controleren of account setup kan worden voltooid         |
+| 👥 Uitnodiging opnieuw versturen | `/api/invitations/resend`          | POST    | ✅              | Uitnodiging opnieuw versturen voor niet-geverifieerde gebruiker |
 | 📂 Categorieën bekijken        | `/api/categories`                   | GET     | ❌              | Lijst met alle categorieën                              |
 | 📦 Items per categorie         | `/api/categories/{id}/items`        | GET     | ❌              | Lijst van items binnen een bepaalde categorie           |
 | 📦 Itemdetails                 | `/api/items/{id}`                   | GET     | ❌              | Informatie over een specifiek item                      |
@@ -225,13 +243,24 @@ De API stuurt automatisch een e-mail naar de lener:
 | 👥 Docent toevoegen            | `/api/users`                           | POST    | ✅ (admin)     | Nieuwe docent aanmaken (alleen door admins)      |
 
 ---
+## 🔄 Geautomatiseerde Processen
+
+Het systeem voert de volgende geautomatiseerde taken uit:
+
+| Taak                      | Frequentie    | Beschrijving                                           |
+|---------------------------|---------------|--------------------------------------------------------|
+| E-mail herinneringen      | Dagelijks (8:00) | Verstuurt herinneringen voor items die binnenkort ingeleverd moeten worden of te laat zijn |
+| Opschonen verlopen uitnodigingen | Dagelijks    | Verwijdert accounts waarvan de uitnodiging ouder is dan 6 uur en niet geverifieerd |
+
+---
 ## ⚙️ Gebruikte Technologieën
 
 Het systeem is gebouwd als RESTful API met de volgende stack:
 
-- Laravel 11 (PHP 8
+- Laravel 11 (PHP 8)
 - MySQL voor opslag van uitleen-, schade- en gebruikersdata
-- Laravel Mail voor het automatisch verzenden van herinneringen
+- Laravel Mail voor het automatisch verzenden van herinneringen en verificaties
+- Laravel Sanctum voor token-based authenticatie
 - JSON als standaarduitwisselingsformaat
 ---
 
@@ -241,7 +270,11 @@ Het systeem is gebouwd als RESTful API met de volgende stack:
 - Inspectie bij terugname is verplicht en leidt eventueel tot schade-registratie
 - De uitleengeschiedenis en schadehistorie worden bewaard in een logboek
 - Alleen docenten kunnen inloggen
-- Alleen docenten met adminrechten kunnen nieuwe docenten toevoegen
+- Docenten moeten hun e-mailadres verifiëren en account setup voltooien
+- Uitnodigingen voor nieuwe accounts vervallen na 6 uur zonder activatie
+- Alleen docenten met adminrechten kunnen nieuwe docenten uitnodigen
+- Voor studenten zijn alleen e-mailadressen met @student.firda.nl toegestaan
+- Voor docenten zijn alleen e-mailadressen met @firda.nl toegestaan
 
 
 ---

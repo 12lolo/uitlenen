@@ -35,6 +35,23 @@ class AuthController extends Controller
         }
 
         $user = User::where('email', $request->email)->firstOrFail();
+
+        // Check if email is verified
+        if (!$user->hasVerifiedEmail()) {
+            return response()->json([
+                'message' => 'E-mailadres is niet geverifieerd. Controleer uw e-mail om uw account te verifiëren.'
+            ], 403);
+        }
+
+        // Check if account setup is completed
+        if (!$user->setup_completed) {
+            return response()->json([
+                'message' => 'Account setup is niet voltooid. Voltooi de setup via de verificatie-e-mail.',
+                'setup_required' => true,
+                'user_id' => $user->id
+            ], 403);
+        }
+
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
@@ -77,12 +94,11 @@ class AuthController extends Controller
             'is_admin' => false, // Default to regular user
         ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        // Send verification email
+        $user->sendEmailVerificationNotification();
 
         return response()->json([
-            'message' => 'Gebruiker succesvol geregistreerd',
-            'access_token' => $token,
-            'token_type' => 'Bearer',
+            'message' => 'Gebruiker succesvol geregistreerd. Controleer uw e-mail om uw account te verifiëren.',
             'user' => $user
         ], 201);
     }

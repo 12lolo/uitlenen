@@ -1,5 +1,80 @@
 Certainly! Here's your **updated and final `README.md`** file for your Laravel Uitleen-API project, including the correct GitHub URL and clean formatting:
+# Firda Uitleensysteem API
 
+## Beschrijving
+Dit is een API voor het beheren van uitleenmateriaal bij Firda. Het systeem maakt het mogelijk om apparatuur uit te lenen, te retourneren en de status bij te houden.
+
+## Installatie
+
+```bash
+# Kloon de repository
+git clone [repository-url]
+
+# Ga naar de projectmap
+cd [project-map]
+
+# Installeer de dependencies
+composer install
+
+# Kopieer het .env bestand
+cp .env.example .env
+
+# Genereer een app key
+php artisan key:generate
+
+# Configureer de database in .env
+
+# Voer de migraties uit
+php artisan migrate
+
+# Start de server
+php artisan serve
+```
+
+## Foutoplossing
+
+### Database tabellen ontbreken
+
+Als je een foutmelding krijgt over ontbrekende tabellen (zoals 'personal_access_tokens'), controleer dan of alle migraties correct zijn uitgevoerd:
+
+```bash
+# Bekijk de status van migraties
+php artisan migrate:status
+
+# Voer alle migraties uit
+php artisan migrate
+
+# Of voer opnieuw alle migraties uit (dit verwijdert bestaande data)
+php artisan migrate:fresh
+```
+
+## ⚠️ Troubleshooting
+
+### Missing Tables Error
+
+If you encounter an error related to missing tables (like `personal_access_tokens`), run the migrations:
+
+```bash
+php artisan migrate
+```
+
+If that doesn't work, try:
+
+```bash
+php artisan migrate:fresh
+```
+
+> Note: `migrate:fresh` will drop all tables and recreate them.
+
+## Functionaliteiten
+
+- Beheer van uitleenbare items en categorieën
+- Uitleenregistratie en retournering
+- Automatische e-mailherinneringen
+- Schaderapportage
+- Gebruikersbeheer met rollen
+
+Raadpleeg de documentatie in `/documentation/functioneel-ontwerp.md` voor meer details.
 ````markdown
 # 📦 Uitleen-API – Firda
 

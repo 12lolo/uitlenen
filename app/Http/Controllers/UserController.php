@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -33,9 +34,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
             'is_admin' => 'boolean'
         ]);
 
@@ -51,18 +50,25 @@ class UserController extends Controller
             ], 422);
         }
 
+        // Generate a temporary random password (not needed for login since user will set their password)
+        $tempPassword = Str::random(16);
+
         $user = User::create([
-            'name' => $request->name,
+            'name' => 'New User', // Temporary name
             'email' => $email,
-            'password' => Hash::make($request->password),
-            'is_admin' => $request->is_admin ?? false
+            'password' => Hash::make($tempPassword),
+            'is_admin' => $request->is_admin ?? false,
+            'setup_completed' => false,
+            'invitation_sent_at' => now()
         ]);
 
+        // Send verification email
+        $user->sendEmailVerificationNotification();
+
         return response()->json([
-            'message' => 'Docent succesvol toegevoegd',
+            'message' => 'Uitnodiging succesvol verzonden. De gebruiker ontvangt een e-mail om het account te activeren.',
             'user' => [
                 'id' => $user->id,
-                'name' => $user->name,
                 'email' => $user->email,
                 'is_admin' => $user->is_admin,
                 'created_at' => $user->created_at

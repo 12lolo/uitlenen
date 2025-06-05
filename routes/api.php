@@ -22,7 +22,7 @@ use App\Http\Controllers\FormatController;
 
 // Help routes
 Route::get('/help', [HelpController::class, 'publicHelp']);
-Route::get('/help/authenticated', [HelpController::class, 'authenticatedHelp'])->middleware('auth:sanctum');
+Route::get('/help/authenticated', [HelpController::class, 'authenticatedHelp'])->middleware('auth:sanctum')->name('api.help.authenticated');
 
 // Authentication routes
 Route::post('/login', [AuthController::class, 'login']);
@@ -30,6 +30,24 @@ Route::get('/login/format', [FormatController::class, 'loginFormat']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::get('/register/format', [FormatController::class, 'registerFormat']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+
+// Email Verification Routes
+Route::get('/email/verify/{id}/{hash}', [App\Http\Controllers\VerificationController::class, 'verify'])
+    ->middleware(['check.invitation'])
+    ->name('verification.verify');
+Route::post('/email/verification-notification', [App\Http\Controllers\VerificationController::class, 'resend'])
+    ->middleware(['auth:sanctum', 'throttle:6,1'])
+    ->name('verification.send');
+
+// Invitation Routes
+Route::post('/invitations/resend', [App\Http\Controllers\InvitationController::class, 'resend'])
+    ->middleware(['auth:sanctum', 'verified']);
+
+// Account Setup Routes
+Route::post('/account-setup/complete', [App\Http\Controllers\AccountSetupController::class, 'completeSetup'])
+    ->middleware(['check.invitation']);
+Route::get('/account-setup/status', [App\Http\Controllers\AccountSetupController::class, 'checkSetupStatus'])
+    ->middleware(['check.invitation']);
 
 // User profile route
 Route::get('/user', function (Request $request) {
@@ -41,12 +59,16 @@ Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/categories/{id}/items', [CategoryController::class, 'items']);
 Route::get('/items/{id}', [ItemController::class, 'show']);
 
+// Authentication routes
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']);
+
 // Test routes
 Route::post('/test/email', [TestController::class, 'testEmail']);
 Route::get('/test/email/format', [FormatController::class, 'testEmailFormat']);
 
 // Protected routes - authentication required
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     // Category management
     Route::post('/categories', [CategoryController::class, 'store']);
     Route::get('/categories/format', [FormatController::class, 'categoryFormat']);
