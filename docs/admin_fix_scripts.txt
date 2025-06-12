@@ -1,0 +1,3 @@
+scripts/admin-fix/admin_test_with_login.sh
+scripts/admin-fix/laravel12_middleware_fix.sh
+scripts/admin-fix/laravel12_route_fix.sh
