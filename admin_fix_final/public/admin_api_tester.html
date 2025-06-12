@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin API Tester</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            white-space: pre-wrap;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            background-color: #ddd;
+            margin-right: 5px;
+            border-radius: 4px 4px 0 0;
+        }
+        .tab.active {
+            background-color: white;
+            border: 1px solid #ccc;
+            border-bottom: none;
+        }
+        .tab-content {
+            display: none;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 0 4px 4px 4px;
+        }
+        .tab-content.active {
+            display: block;
+            background-color: white;
+        }
+        .success {
+            color: green;
+        }
+        .error {
+            color: red;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Laravel 12 Admin API Tester</h1>
+        
+        <div class="form-group">
+            <label for="token">Admin Token:</label>
+            <input type="text" id="token" placeholder="Enter your admin token (e.g., 13|6IQsPIAL9R9cFaf0...)">
+        </div>
+        
+        <div class="form-group">
+            <label for="baseUrl">API Base URL:</label>
+            <input type="text" id="baseUrl" value="https://uitleensysteemfirda.nl/api" placeholder="API base URL">
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="users">Users</div>
+            <div class="tab" data-tab="tests">Test Endpoints</div>
+            <div class="tab" data-tab="admin">Admin Routes</div>
+            <div class="tab" data-tab="logs">Results Log</div>
+        </div>
+        
+        <div class="tab-content active" data-content="users">
+            <h2>User Management</h2>
+            <button onclick="getUsers()">Get All Users</button>
+            <hr>
+            <h3>Create New User</h3>
+            <div class="form-group">
+                <label for="userEmail">Email:</label>
+                <input type="text" id="userEmail" placeholder="user@firda.nl">
+            </div>
+            <div class="form-group">
+                <label for="isAdmin">Admin:</label>
+                <select id="isAdmin">
+                    <option value="false">No</option>
+                    <option value="true">Yes</option>
+                </select>
+            </div>
+            <button onclick="createUser()">Create User</button>
+            <div id="usersResult" class="result">Results will appear here...</div>
+        </div>
+        
+        <div class="tab-content" data-content="tests">
+            <h2>API Test Endpoints</h2>
+            <button onclick="runTest('auth-check-test')">Auth Check Test</button>
+            <button onclick="runTest('admin-direct-test')">Admin Direct Test</button>
+            <button onclick="runTest('admin-middleware-test')">Admin Middleware Test</button>
+            <button onclick="runTest('admin-controller-test')">Admin Controller Test</button>
+            <button onclick="runTest('admin-ping')">Admin Ping Test</button>
+            <div id="testsResult" class="result">Results will appear here...</div>
+        </div>
+        
+        <div class="tab-content" data-content="admin">
+            <h2>Admin Routes</h2>
+            <button onclick="runAdminRoute('admin/users')">Admin Users</button>
+            <button onclick="runAdminRoute('admin/check')">Admin Check</button>
+            <button onclick="runAdminRoute('admin/status')">Admin Status</button>
+            <button onclick="runAdminRoute('admin-status')">Public Admin Status</button>
+            <div id="adminResult" class="result">Results will appear here...</div>
+        </div>
+        
+        <div class="tab-content" data-content="logs">
+            <h2>Results Log</h2>
+            <button onclick="clearLog()">Clear Log</button>
+            <table id="logTable">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Endpoint</th>
+                        <th>Status</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody id="logBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Switch tabs
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                const tabId = this.getAttribute('data-tab');
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.querySelector(`.tab-content[data-content="${tabId}"]`).classList.add('active');
+            });
+        });
+        
+        // API call function
+        async function callApi(endpoint, method = 'GET', body = null) {
+            const token = document.getElementById('token').value;
+            const baseUrl = document.getElementById('baseUrl').value;
+            const url = `${baseUrl}/${endpoint}`;
+            
+            try {
+                const headers = {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                };
+                
+                const options = {
+                    method,
+                    headers
+                };
+                
+                if (body) {
+                    options.body = JSON.stringify(body);
+                }
+                
+                const response = await fetch(url, options);
+                const status = response.status;
+                let data;
+                
+                try {
+                    data = await response.json();
+                } catch (e) {
+                    data = { error: "Invalid JSON response" };
+                }
+                
+                // Log the result
+                logResult(endpoint, status, data);
+                
+                return { status, data };
+            } catch (error) {
+                logResult(endpoint, 500, { error: error.message });
+                return { 
+                    status: 500, 
+                    data: { error: error.message } 
+                };
+            }
+        }
+        
+        // Get all users
+        async function getUsers() {
+            const resultElement = document.getElementById('usersResult');
+            resultElement.innerHTML = "Loading...";
+            
+            const { status, data } = await callApi('users');
+            
+            if (status >= 200 && status < 300) {
+                resultElement.innerHTML = `<span class="success">Success (${status}):</span>\n${JSON.stringify(data, null, 2)}`;
+            } else {
+                resultElement.innerHTML = `<span class="error">Error (${status}):</span>\n${JSON.stringify(data, null, 2)}`;
+            }
+        }
+        
+        // Create a new user
+        async function createUser() {
+            const resultElement = document.getElementById('usersResult');
+            const email = document.getElementById('userEmail').value;
+            const isAdmin = document.getElementById('isAdmin').value === 'true';
+            
+            if (!email) {
+                resultElement.innerHTML = '<span class="error">Please enter an email address</span>';
+                return;
+            }
+            
+            resultElement.innerHTML = "Creating user...";
+            
+            const { status, data } = await callApi('users', 'POST', { email, is_admin: isAdmin });
+            
+            if (status >= 200 && status < 300) {
+                resultElement.innerHTML = `<span class="success">User created (${status}):</span>\n${JSON.stringify(data, null, 2)}`;
+            } else {
+                resultElement.innerHTML = `<span class="error">Error creating user (${status}):</span>\n${JSON.stringify(data, null, 2)}`;
+            }
+        }
+        
+        // Run a test endpoint
+        async function runTest(endpoint) {
+            const resultElement = document.getElementById('testsResult');
+            resultElement.innerHTML = "Running test...";
+            
+            const { status, data } = await callApi(endpoint);
+            
+            if (status >= 200 && status < 300) {
+                resultElement.innerHTML = `<span class="success">Test passed (${status}):</span>\n${JSON.stringify(data, null, 2)}`;
+            } else {
+                resultElement.innerHTML = `<span class="error">Test failed (${status}):</span>\n${JSON.stringify(data, null, 2)}`;
+            }
+        }
+        
+        // Run an admin route
+        async function runAdminRoute(route) {
+            const resultElement = document.getElementById('adminResult');
+            resultElement.innerHTML = "Accessing admin route...";
+            
+            const { status, data } = await callApi(route);
+            
+            if (status >= 200 && status < 300) {
+                resultElement.innerHTML = `<span class="success">Success (${status}):</span>\n${JSON.stringify(data, null, 2)}`;
+            } else {
+                resultElement.innerHTML = `<span class="error">Error (${status}):</span>\n${JSON.stringify(data, null, 2)}`;
+            }
+        }
+        
+        // Log the result to the log table
+        function logResult(endpoint, status, data) {
+            const logBody = document.getElementById('logBody');
+            const row = document.createElement('tr');
+            
+            const time = new Date().toLocaleTimeString();
+            const statusClass = status >= 200 && status < 300 ? 'success' : 'error';
+            
+            row.innerHTML = `
+                <td>${time}</td>
+                <td>${endpoint}</td>
+                <td class="${statusClass}">${status}</td>
+                <td>${JSON.stringify(data).substring(0, 100)}${JSON.stringify(data).length > 100 ? '...' : ''}</td>
+            `;
+            
+            logBody.prepend(row);
+        }
+        
+        // Clear the log
+        function clearLog() {
+            document.getElementById('logBody').innerHTML = '';
+        }
+    </script>
+</body>
+</html>

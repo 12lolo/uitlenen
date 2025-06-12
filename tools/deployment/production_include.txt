@@ -1,0 +1,28 @@
+# Essential files for production deployment
+# Only these files will be included in the final deployment package
+
+# Core controllers with fixes
+app/Http/Controllers/UserController.php
+app/Http/Controllers/SimpleUserController.php
+
+# Core middleware with fixes
+app/Http/Middleware/AdminMiddleware.php
+
+# Essential route files
+routes/api.php
+routes/admin_test_routes.php
+routes/auth_check_test.php
+routes/admin.php
+routes/comprehensive_admin_fix.php
+
+# Testing tools
+admin_api_tester.html
+
+# Deployment scripts
+admin_fix_final/verify_deployment.sh
+admin_fix_final/post_deploy.sh
+admin_fix_final/DEPLOY_INSTRUCTIONS.md
+
+# Documentation
+docs/admin_fix_summary.md
+docs/laravel12_admin_quick_reference.md
