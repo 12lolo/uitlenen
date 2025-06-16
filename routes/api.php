@@ -100,12 +100,21 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
         Route::get('/users', [UserController::class, 'index']);
         Route::post('/users', [UserController::class, 'store']);
         Route::get('/users/format', [FormatController::class, 'userFormat']);
+        
+        // API Key management
+        Route::apiResource('api-keys', \App\Http\Controllers\ApiKeyController::class);
     });
 });
 
 // Notification route (protected by token for cron jobs)
 Route::post('/notifications/send-reminders', [NotificationController::class, 'sendReminders']);
 Route::get('/notifications/send-reminders/format', [FormatController::class, 'sendRemindersFormat']);
+
+// API Key protected routes (for machine-to-machine communication)
+Route::middleware('api.key')->group(function () {
+    Route::get('/items/available', [ItemController::class, 'availableItems']);
+    Route::get('/lendings/overdue', [LoanController::class, 'overdueItems']);
+});
 
 // Legacy project routes
 Route::apiResource('projects', ProjectController::class);

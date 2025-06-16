@@ -130,4 +130,21 @@ class ItemController extends Controller
             'message' => 'Item succesvol verwijderd'
         ]);
     }
+
+    /**
+     * Get available items (not currently loaned out)
+     * Used with API Key authentication
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function availableItems()
+    {
+        $availableItems = Item::whereDoesntHave('loans', function ($query) {
+            $query->whereNull('returned_at');
+        })->get();
+        
+        return response()->json([
+            'data' => $availableItems
+        ]);
+    }
 }
