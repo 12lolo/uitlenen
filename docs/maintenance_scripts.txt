@@ -1,0 +1,8 @@
+scripts/maintenance/cleanup_files_production.sh
+scripts/maintenance/cleanup_production.sh
+scripts/maintenance/cleanup_project.sh
+scripts/maintenance/fix_laravel12_admin_middleware.sh
+scripts/maintenance/fix_production.sh
+scripts/maintenance/fix_sessions.sh
+scripts/maintenance/fixed_admin_deployment.sh
+scripts/maintenance/maintenance.sh

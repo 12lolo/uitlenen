@@ -1,0 +1,65 @@
+# This file lists all files and directories that should be included in the production deployment
+# Used by deploy_production.sh to create a more focused deployment package
+
+# Core Laravel application code and structure
+app/Console/
+app/Http/
+app/Mail/
+app/Models/
+app/Notifications/
+app/Providers/
+
+# Bootstrap files (only needed ones)
+bootstrap/app.php
+bootstrap/providers.php
+
+# Configuration (optimized for production)
+config/app.php
+config/auth.php
+config/cache.php
+config/database.php
+config/filesystems.php
+config/logging.php
+config/mail.php
+config/queue.php
+config/sanctum.php
+config/services.php
+config/session.php
+
+# Database structure (migrations only, not seeders for production)
+database/migrations/
+# Database factories and seeders for dummy data
+database/factories/
+database/seeders/
+
+# Public files that must be web accessible
+public/favicon.ico
+public/index.php
+public/robots.txt
+public/.htaccess
+
+# Views, assets and resources
+resources/views/
+resources/css/app.css
+resources/js/app.js
+
+# Routes
+routes/api.php
+routes/web.php
+routes/console.php
+
+# Storage structure (just the .gitignore files to maintain folder structure)
+storage/app/.gitignore
+storage/framework/.gitignore
+storage/framework/cache/.gitignore
+storage/framework/sessions/.gitignore
+storage/framework/views/.gitignore
+storage/framework/testing/.gitignore
+storage/logs/.gitignore
+
+# Essential Laravel files
+composer.json
+artisan
+
+# Production environment file
+.env.production

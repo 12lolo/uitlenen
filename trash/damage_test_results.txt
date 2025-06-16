@@ -1,0 +1,186 @@
+===== TESTING DAMAGE REPORTING FUNCTIONALITY =====
+
+1. Getting damage report format guide...
+Array
+(
+    [code] => 200
+    [response] => Array
+        (
+            [description] => (damage description)
+            [severity] => (severity level: minor/moderate/severe)
+            [reported_by] => (optional: user id who reported)
+        )
+
+)
+
+2. Getting all items...
+Found item to test damage reporting: Dell Laptop (ID: 1)
+
+3. Creating a new damage report...
+Array
+(
+    [code] => 422
+    [response] => Array
+        (
+            [errors] => Array
+                (
+                    [severity] => Array
+                        (
+                            [0] => validation.in
+                        )
+
+                )
+
+        )
+
+)
+
+4. Getting all damage reports...
+Array
+(
+    [code] => 200
+    [response] => Array
+        (
+            [0] => Array
+                (
+                    [id] => 1
+                    [item_id] => 4
+                    [description] => Screen is cracked
+                    [severity] => severe
+                    [student_email] => tim.vandijk@student.firda.nl
+                    [photos] => []
+                    [reported_by] => Array
+                        (
+                            [id] => 6
+                            [name] => Piet Pietersen
+                            [email] => piet.pietersen@firda.nl
+                            [email_verified_at] => 2025-06-11T07:23:32.000000Z
+                            [is_admin] => 1
+                            [setup_completed] => 
+                            [invitation_sent_at] => 
+                            [created_at] => 2025-06-11T07:23:32.000000Z
+                            [updated_at] => 2025-06-11T07:23:32.000000Z
+                        )
+
+                    [created_at] => 2025-06-11T07:33:45.000000Z
+                    [updated_at] => 2025-06-11T07:33:45.000000Z
+                    [item] => Array
+                        (
+                            [id] => 4
+                            [title] => Screwdriver Set
+                            [description] => Professional 12-piece screwdriver set
+                            [category_id] => 3
+                            [photos] => []
+                            [status] => available
+                            [location] => Workshop Drawer 5
+                            [inventory_number] => 
+                            [created_at] => 2025-06-11T07:33:45.000000Z
+                            [updated_at] => 2025-06-11T07:33:45.000000Z
+                            [category] => Array
+                                (
+                                    [id] => 3
+                                    [name] => Tools
+                                    [description] => Workshop tools and equipment
+                                )
+
+                        )
+
+                )
+
+            [1] => Array
+                (
+                    [id] => 2
+                    [item_id] => 5
+                    [description] => Small dent on the corner
+                    [severity] => minor
+                    [student_email] => 
+                    [photos] => []
+                    [reported_by] => Array
+                        (
+                            [id] => 1
+                            [name] => Senne Visser
+                            [email] => 252034@student.firda.nl
+                            [email_verified_at] => 2025-06-05T10:31:33.000000Z
+                            [is_admin] => 1
+                            [setup_completed] => 1
+                            [invitation_sent_at] => 
+                            [created_at] => 2025-06-05T10:31:33.000000Z
+                            [updated_at] => 2025-06-05T10:31:33.000000Z
+                        )
+
+                    [created_at] => 2025-06-11T07:33:45.000000Z
+                    [updated_at] => 2025-06-11T07:33:45.000000Z
+                    [item] => Array
+                        (
+                            [id] => 5
+                            [title] => Microscope
+                            [description] => Binocular laboratory microscope, 1000x magnification
+                            [category_id] => 4
+                            [photos] => []
+                            [status] => available
+                            [location] => Science Lab Cabinet 2
+                            [inventory_number] => 
+                            [created_at] => 2025-06-11T07:33:45.000000Z
+                            [updated_at] => 2025-06-11T07:33:45.000000Z
+                            [category] => Array
+                                (
+                                    [id] => 4
+                                    [name] => Lab Equipment
+                                    [description] => Laboratory equipment and supplies
+                                )
+
+                        )
+
+                )
+
+            [2] => Array
+                (
+                    [id] => 3
+                    [item_id] => 6
+                    [description] => Minor cosmetic damage
+                    [severity] => minor
+                    [student_email] => laura.peters@student.firda.nl
+                    [photos] => []
+                    [reported_by] => Array
+                        (
+                            [id] => 1
+                            [name] => Senne Visser
+                            [email] => 252034@student.firda.nl
+                            [email_verified_at] => 2025-06-05T10:31:33.000000Z
+                            [is_admin] => 1
+                            [setup_completed] => 1
+                            [invitation_sent_at] => 
+                            [created_at] => 2025-06-05T10:31:33.000000Z
+                            [updated_at] => 2025-06-05T10:31:33.000000Z
+                        )
+
+                    [created_at] => 2025-06-11T07:33:45.000000Z
+                    [updated_at] => 2025-06-11T07:33:45.000000Z
+                    [item] => Array
+                        (
+                            [id] => 6
+                            [title] => Basketball
+                            [description] => Official size basketball
+                            [category_id] => 5
+                            [photos] => []
+                            [status] => available
+                            [location] => Gym Storage Room
+                            [inventory_number] => 
+                            [created_at] => 2025-06-11T07:33:45.000000Z
+                            [updated_at] => 2025-06-11T07:33:45.000000Z
+                            [category] => Array
+                                (
+                                    [id] => 5
+                                    [name] => Sports Equipment
+                                    [description] => Athletic and sports gear
+                                )
+
+                        )
+
+                )
+
+        )
+
+)
+
+===== DAMAGE REPORTING TESTING COMPLETED =====

@@ -1,0 +1,29 @@
+===== TESTING ADMIN FUNCTIONALITY =====
+
+1. Getting all users (admin only)...
+Array
+(
+    [code] => 500
+    [response] => 
+)
+
+2. Getting user format guide...
+Array
+(
+    [code] => 200
+    [response] => Array
+        (
+            [email] => (user email - must end with @firda.nl)
+            [is_admin] => (optional: true/false - defaults to false if not specified)
+        )
+
+)
+
+3. Creating a new test user (test1749631029@firda.nl)...
+Array
+(
+    [code] => 500
+    [response] => 
+)
+
+===== ADMIN FUNCTIONALITY TESTING COMPLETED =====
