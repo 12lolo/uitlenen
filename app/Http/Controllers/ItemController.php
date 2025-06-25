@@ -7,7 +7,7 @@ use App\Models\Loan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class ItemController extends Controller
+class ItemController extends ApiController
 {
     /**
      * Display a listing of all items
@@ -18,7 +18,7 @@ class ItemController extends Controller
     {
         $items = Item::with('category')->get();
 
-        return response()->json($items);
+        return $this->successResponse($items);
     }
 
     /**
@@ -38,15 +38,16 @@ class ItemController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+            return $this->validationErrorResponse($validator);
         }
 
         $item = Item::create($request->all());
 
-        return response()->json([
-            'message' => 'Item succesvol aangemaakt',
-            'item' => $item
-        ], 201);
+        return $this->successResponse(
+            ['item' => $item],
+            'Item succesvol aangemaakt',
+            201
+        );
     }
 
     /**
@@ -57,19 +58,23 @@ class ItemController extends Controller
      */
     public function show($id)
     {
-        $item = Item::with('category')->findOrFail($id);
+        try {
+            $item = Item::with('category')->findOrFail($id);
+            
+            // Check if item is currently on loan
+            $activeLoans = Loan::where('item_id', $id)
+                ->whereNull('returned_at')
+                ->first();
 
-        // Check if item is currently on loan
-        $activeLoans = Loan::where('item_id', $id)
-            ->whereNull('returned_at')
-            ->first();
+            $isAvailable = $activeLoans === null;
 
-        $isAvailable = $activeLoans === null;
-
-        return response()->json([
-            'item' => $item,
-            'is_available' => $isAvailable
-        ]);
+            return $this->successResponse([
+                'item' => $item,
+                'is_available' => $isAvailable
+            ]);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return $this->notFoundResponse('Het opgevraagde item kon niet worden gevonden.');
+        }
     }
 
     /**
@@ -81,26 +86,27 @@ class ItemController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $item = Item::findOrFail($id);
+        try {
+            $item = Item::findOrFail($id);
 
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'category_id' => 'required|exists:categories,id',
-            'photos' => 'nullable|array',
-            'photos.*' => 'nullable|string|url'
-        ]);
+            $validator = Validator::make($request->all(), [
+                'title' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'category_id' => 'required|exists:categories,id',
+                'photos' => 'nullable|array',
+                'photos.*' => 'nullable|string|url'
+            ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+            if ($validator->fails()) {
+                return $this->validationErrorResponse($validator);
+            }
+
+            $item->update($request->all());
+
+            return $this->successResponse(['item' => $item], 'Item succesvol bijgewerkt');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return $this->notFoundResponse('Het opgevraagde item kon niet worden gevonden.');
         }
-
-        $item->update($request->all());
-
-        return response()->json([
-            'message' => 'Item succesvol bijgewerkt',
-            'item' => $item
-        ]);
     }
 
     /**
@@ -111,40 +117,45 @@ class ItemController extends Controller
      */
     public function destroy($id)
     {
-        $item = Item::findOrFail($id);
+        try {
+            $item = Item::findOrFail($id);
 
-        // Check if item is currently on loan
-        $activeLoans = Loan::where('item_id', $id)
-            ->whereNull('returned_at')
-            ->count();
+            // Check if item is currently on loan
+            $activeLoans = Loan::where('item_id', $id)
+                ->whereNull('returned_at')
+                ->count();
 
-        if ($activeLoans > 0) {
-            return response()->json([
-                'message' => 'Kan item niet verwijderen omdat het momenteel is uitgeleend'
-            ], 422);
+            if ($activeLoans > 0) {
+                return $this->errorResponse(
+                    'Kan item niet verwijderen omdat het momenteel is uitgeleend',
+                    422
+                );
+            }
+
+            $item->delete();
+
+            return $this->successResponse(null, 'Item succesvol verwijderd');
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return $this->notFoundResponse('Het opgevraagde item kon niet worden gevonden.');
         }
-
-        $item->delete();
-
-        return response()->json([
-            'message' => 'Item succesvol verwijderd'
-        ]);
     }
 
     /**
      * Get available items (not currently loaned out)
-     * Used with API Key authentication
+     * This endpoint is public - no authentication required
      *
      * @return \Illuminate\Http\JsonResponse
      */
     public function availableItems()
     {
-        $availableItems = Item::whereDoesntHave('loans', function ($query) {
-            $query->whereNull('returned_at');
-        })->get();
-        
-        return response()->json([
-            'data' => $availableItems
-        ]);
+        try {
+            $availableItems = Item::whereDoesntHave('loans', function ($query) {
+                $query->whereNull('returned_at');
+            })->with('category')->get();
+            
+            return $this->successResponse(['data' => $availableItems]);
+        } catch (\Exception $e) {
+            return $this->errorResponse('Er is een fout opgetreden bij het ophalen van beschikbare items.', 500);
+        }
     }
 }

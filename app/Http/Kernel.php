@@ -21,6 +21,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        \App\Http\Middleware\LogoutMiddleware::class,
     ];
 
     /**
@@ -46,6 +47,7 @@ class Kernel extends HttpKernel
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\ApiErrorHandlingMiddleware::class,
         ],
     ];
 
@@ -70,6 +72,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'admin' => \App\Http\Middleware\AdminMiddleware::class,
         'check.invitation' => \App\Http\Middleware\CheckInvitationExpiry::class,
-        'api.key' => \App\Http\Middleware\ValidateApiKey::class,
+        'api.key' => \App\Http\Middleware\ApiKeyMiddleware::class,
     ];
 }

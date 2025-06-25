@@ -132,4 +132,23 @@ class LoanController extends Controller
             'overdue' => $overdue
         ]);
     }
+
+    /**
+     * Get overdue loans (past due date and not returned)
+     * This endpoint is protected by API key authentication
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function overdueItems()
+    {
+        $overdueLoans = Loan::with(['item', 'user'])
+            ->whereNull('returned_at')
+            ->where('due_date', '<', Carbon::now())
+            ->orderBy('due_date', 'asc')
+            ->get();
+
+        return response()->json([
+            'data' => $overdueLoans
+        ]);
+    }
 }

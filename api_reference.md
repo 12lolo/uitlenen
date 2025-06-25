@@ -2,9 +2,14 @@
 
 This document provides a quick reference for the most commonly used API routes in the Uitleensysteem application.
 
-## Authentication
+## Authentication Methods
 
-### Login
+The API supports two types of authentication:
+
+### 1. User Authentication (Bearer Token)
+
+For user-based authentication, users must log in to obtain a token:
+
 **Endpoint:** `POST /api/login`
 
 **Request Body:**
@@ -18,15 +23,32 @@ This document provides a quick reference for the most commonly used API routes i
 **Response:**
 ```json
 {
-  "token": "your_access_token",
+  "access_token": "your_access_token",
+  "token_type": "Bearer",
   "user": {
     "id": 1,
     "name": "User Name",
     "email": "your_email@example.com",
-    "role": "admin"
+    "is_admin": true
   }
 }
 ```
+
+**Using the token:**
+```
+Authorization: Bearer your_access_token
+```
+
+### 2. API Key Authentication
+
+For machine-to-machine or application-based authentication, use API keys:
+
+**Header:**
+```
+X-API-KEY: your_api_key
+```
+
+For detailed information on API key management, see [API Key Guide](/docs/api_key_guide.md).
 
 ## Categories
 
@@ -365,3 +387,79 @@ These endpoints provide information about the expected format for creating or up
 - **User Format:** `GET /api/users/format`
 
 Use these endpoints to get the expected JSON structure for your requests.
+
+## API Key Protected Endpoints
+
+These endpoints can be accessed using an API key for machine-to-machine communication.
+
+### Get Available Items
+**Endpoint:** `GET /api/items/available`
+**Authentication:** API Key (X-API-KEY header)
+
+**Response:**
+```json
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "Laptop Dell XPS 13",
+      "description": "High-performance laptop for development",
+      "serial_number": "XPS-13-9380-001",
+      "purchase_date": "2023-01-15",
+      "status": "available",
+      "category_id": 1,
+      "category": {
+        "id": 1,
+        "name": "Electronics",
+        "description": "Electronic devices and equipment"
+      }
+    },
+    {
+      "id": 2,
+      "name": "Projector BenQ",
+      "description": "4K projector for presentations",
+      "serial_number": "BQ-4K-2023-002",
+      "purchase_date": "2023-02-20",
+      "status": "available",
+      "category_id": 1,
+      "category": {
+        "id": 1,
+        "name": "Electronics",
+        "description": "Electronic devices and equipment"
+      }
+    }
+  ]
+}
+```
+
+### Get Overdue Loans
+**Endpoint:** `GET /api/lendings/overdue`
+**Authentication:** API Key (X-API-KEY header)
+
+**Response:**
+```json
+{
+  "data": [
+    {
+      "id": 5,
+      "user_id": 3,
+      "item_id": 7,
+      "loan_date": "2023-05-01T00:00:00.000000Z",
+      "due_date": "2023-05-15T00:00:00.000000Z",
+      "returned_at": null,
+      "notes": "Extended project use",
+      "item": {
+        "id": 7,
+        "name": "DSLR Camera",
+        "description": "Canon EOS 5D Mark IV",
+        "serial_number": "CN-5D4-2022-007"
+      },
+      "user": {
+        "id": 3,
+        "name": "Jane Smith",
+        "email": "jane.smith@firda.nl"
+      }
+    }
+  ]
+}
+```

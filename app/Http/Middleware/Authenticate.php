@@ -19,8 +19,30 @@ class Authenticate extends Middleware
      */
     protected function unauthenticated($request, array $guards)
     {
-        if ($request->expectsJson()) {
-            abort(response()->json(['message' => 'Unauthenticated.'], 401));
+        if ($request->expectsJson() || $request->is('api/*')) {
+            // Check if the request is for the logout endpoint
+            if ($request->is('api/logout')) {
+                abort(response()->json([
+                    'message' => 'Je bent niet ingelogd. Log in om uit te kunnen loggen.',
+                    'error' => 'Niet ingelogd',
+                    'status_code' => 401
+                ], 401));
+            }
+            
+            // Check if it's for the items endpoint
+            if ($request->is('api/items')) {
+                abort(response()->json([
+                    'message' => 'Je moet ingelogd zijn om alle items te bekijken.',
+                    'error' => 'Niet ingelogd',
+                    'status_code' => 401
+                ], 401));
+            }
+            
+            abort(response()->json([
+                'message' => 'Je bent niet geauthenticeerd. Log in om toegang te krijgen.',
+                'error' => 'Niet ingelogd',
+                'status_code' => 401
+            ], 401));
         }
 
         parent::unauthenticated($request, $guards);

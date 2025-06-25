@@ -107,7 +107,6 @@ Route::middleware(["auth:sanctum", "verified"])->group(function () {
         Route::get("/users", [UserController::class, "index"]);
         Route::post("/users", [UserController::class, "store"]);
         Route::get("/users/format", [FormatController::class, "userFormat"]);
-        Route::delete("/users/{id}", [UserController::class, "destroy"]);
 
         // API Key management (admin only)
         Route::apiResource("api-keys", ApiKeyController::class);
