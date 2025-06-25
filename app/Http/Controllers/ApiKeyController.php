@@ -9,12 +9,35 @@ use Illuminate\Support\Facades\Validator;
 class ApiKeyController extends Controller
 {
     /**
+     * Check if the user has admin privileges
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse|null
+     */
+    protected function checkAdmin(Request $request)
+    {
+        if (!$request->user() || !$request->user()->is_admin) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Unauthorized. Admin privileges required.'
+            ], 403);
+        }
+
+        return null;
+    }
+
+    /**
      * Display a listing of the API keys
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
+        $adminCheck = $this->checkAdmin($request);
+        if ($adminCheck) {
+            return $adminCheck;
+        }
+
         $apiKeys = ApiKey::all();
         return response()->json(['data' => $apiKeys]);
     }
@@ -27,6 +50,11 @@ class ApiKeyController extends Controller
      */
     public function store(Request $request)
     {
+        $adminCheck = $this->checkAdmin($request);
+        if ($adminCheck) {
+            return $adminCheck;
+        }
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'expires_at' => 'nullable|date',
@@ -51,8 +79,13 @@ class ApiKeyController extends Controller
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
+        $adminCheck = $this->checkAdmin($request);
+        if ($adminCheck) {
+            return $adminCheck;
+        }
+
         $apiKey = ApiKey::findOrFail($id);
         return response()->json(['data' => $apiKey]);
     }
@@ -66,6 +99,11 @@ class ApiKeyController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $adminCheck = $this->checkAdmin($request);
+        if ($adminCheck) {
+            return $adminCheck;
+        }
+
         $apiKey = ApiKey::findOrFail($id);
 
         $validator = Validator::make($request->all(), [
@@ -92,8 +130,13 @@ class ApiKeyController extends Controller
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
+        $adminCheck = $this->checkAdmin($request);
+        if ($adminCheck) {
+            return $adminCheck;
+        }
+
         $apiKey = ApiKey::findOrFail($id);
         $apiKey->delete();
 

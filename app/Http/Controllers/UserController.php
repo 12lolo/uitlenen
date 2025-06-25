@@ -15,8 +15,13 @@ class UserController extends ApiController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
+        // Check if the user is an admin
+        if (!$request->user() || !$request->user()->is_admin) {
+            return $this->errorResponse('Unauthorized. Admin privileges required.', 403);
+        }
+
         $users = User::select('id', 'name', 'email', 'is_admin', 'created_at')
             ->orderBy('name')
             ->get();
@@ -33,6 +38,11 @@ class UserController extends ApiController
      */
     public function store(Request $request)
     {
+        // Check if the user is an admin
+        if (!$request->user() || !$request->user()->is_admin) {
+            return $this->errorResponse('Unauthorized. Admin privileges required.', 403);
+        }
+
         $validator = Validator::make($request->all(), [
             'email' => 'required|string|email|max:255|unique:users',
             'is_admin' => 'boolean'
@@ -83,8 +93,13 @@ class UserController extends ApiController
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
+        // Check if the user is an admin
+        if (!$request->user() || !$request->user()->is_admin) {
+            return $this->errorResponse('Unauthorized. Admin privileges required.', 403);
+        }
+
         try {
             $user = User::findOrFail($id);
             

@@ -102,14 +102,14 @@ Route::middleware(["auth:sanctum", "verified"])->group(function () {
     Route::get("/items/damage/format", [FormatController::class, "damageFormat"]);
     Route::get("/damages", [DamageController::class, "index"]);
 
-    // User management (admin only)
-    Route::middleware("admin")->group(function () {
+    // User management routes - these check for admin status in the controller
+    Route::middleware(["auth:sanctum"])->group(function () {
         Route::get("/users", [UserController::class, "index"]);
         Route::post("/users", [UserController::class, "store"]);
         Route::get("/users/format", [FormatController::class, "userFormat"]);
         Route::delete("/users/{id}", [UserController::class, "destroy"]);
 
-        // API Key management (admin only)
+        // API Key management - also check for admin in controller
         Route::apiResource("api-keys", ApiKeyController::class);
     });
 });
